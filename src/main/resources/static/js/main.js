@@ -17,9 +17,25 @@ var colors = [ '#2196F3', '#32c787', '#00BCD4', '#ff5652', '#ffc107',
 
 
 window.onload = function() {
-	showNotificationToUser();
-	};
 
+	showNotificationToUser();
+}
+
+	
+function isNewNotificationSupported() {
+	    if (!window.Notification || !Notification.requestPermission)
+	        return false;
+	    if (Notification.permission == 'granted')
+	        throw new Error('You must only call this \*before\* calling	Notification.requestPermission(), otherwise this feature detect would bug theuser with an actual notification!');
+	    try {
+	        new Notification('');
+	    } catch (e) {
+	        if (e.name == 'TypeError')
+	            return false;
+	    }
+	    return true;
+	}	
+	
 function connect(event) {
 
 	
@@ -98,26 +114,23 @@ function send(event) {
 }
 
 function showNotificationToUser(){
-	
+	if (!'Notification' in window) {
+		  // Notifications aren't supported
+		  return;
+		}
 	 if (Notification.permission !== 'granted')
 		  Notification.requestPermission();
 	
-	
-/*	document.addEventListener('DOMContentLoaded', function() {
-		 if (!Notification) {
-		  alert('Desktop notifications not available in your browser. Try Chromium.');
-		  return;
-		 }
-
-		 if (Notification.permission !== 'granted')
-		  Notification.requestPermission();
-		});*/
-
-
 		
 }
 
 function notifyMe(message) {
+	
+	if (!'Notification' in window) {
+		  // Notifications aren't supported
+		  return;
+		}
+	
 	if(isCurrentUser !=  'Y'){
 		
 	var content = null;
