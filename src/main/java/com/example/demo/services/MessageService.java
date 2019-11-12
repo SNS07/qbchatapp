@@ -19,13 +19,14 @@ public class MessageService {
 	private ChatMessageRepositories chatMessageRepositories;
 	
 
-	public Collection<ChatMessage> findAvailableMessages(){
-		List<UserMessages>  userMessages = chatMessageRepositories.findAll();
+	public Collection<ChatMessage> findAvailableMessages(String chatRoom){
+		List<UserMessages>  userMessages = chatMessageRepositories.findByChatRoom(chatRoom);
 		return userMessages.stream().map(e->{
 			ChatMessage chatMessage = new ChatMessage();
 			chatMessage.setContent(e.getContent());
 			chatMessage.setSender(e.getOwner());
 			chatMessage.setType(MessageType.getMessageType(e.getMessageType()));
+			chatMessage.setChatRoom(e.getChatRoom());
 			return chatMessage;
 		}).collect(Collectors.toList());
 	}
@@ -35,6 +36,7 @@ public class MessageService {
 		userMessages.setContent(chatMessage.getContent());
 		userMessages.setOwner(chatMessage.getSender());
 		userMessages.setMessageType(chatMessage.getType().toString());
+		userMessages.setChatRoom(chatMessage.getChatRoom());
 		chatMessageRepositories.save(userMessages);
 	}
 	

@@ -17,6 +17,17 @@ public class UserMessages {
 	
 	private String messageType;
 	
+	private String chatRoom;
+	
+	
+
+	public String getChatRoom() {
+		return chatRoom;
+	}
+
+	public void setChatRoom(String chatRoom) {
+		this.chatRoom = chatRoom;
+	}
 
 	public String getMessageType() {
 		return messageType;

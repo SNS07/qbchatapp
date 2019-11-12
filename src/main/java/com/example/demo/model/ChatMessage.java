@@ -4,7 +4,22 @@ public class ChatMessage {
 	
 	private String content;
 	private String sender;
+	private String chatRoom;
 	private MessageType type;
+
+	
+	
+	public String getChatRoom() {
+		return chatRoom;
+	}
+
+	public void setChatRoom(String chatRoom) {
+		this.chatRoom = chatRoom;
+	}
+
+	public ChatMessage() {
+		super();
+	}
 
 	public  enum MessageType {
 		CHAT, LEAVE, JOIN;

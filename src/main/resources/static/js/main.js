@@ -10,13 +10,14 @@ var connectingElement = document.querySelector('.connecting');
 
 var stompClient = null;
 var username = null;
-var flag=true;
+var flag=null;
 
 var colors = [ '#2196F3', '#32c787', '#00BCD4', '#ff5652', '#ffc107',
 		'#ff85af', '#FF9800', '#39bbb0' ];
 
 function connect(event) {
-	flag=true;
+	flag = true;
+	
 	username = document.querySelector('#name').value.trim();
 	
 	if (username) {
@@ -24,6 +25,7 @@ function connect(event) {
 		chatPage.classList.remove('hidden');
 
 		var socket = new SockJS('/test');
+		//var socket = new WebSocket("ws://" + window.location.host +   "/test");
 		stompClient = Stomp.over(socket);
 
 		stompClient.connect({}, onConnected, onError);
@@ -32,17 +34,40 @@ function connect(event) {
 }
 
 function onConnected() {
-	flag=true;
+	
+	
+	var chatRoom = document.querySelector('#chatRoom').value.trim().toUpperCase();
+	
+	findAndUpdateExistingMessagesFromGroup(chatRoom);
+	
 	// Subscribe to the Public Topic
-	stompClient.subscribe('/topic/public', onMessageReceived);
+	stompClient.subscribe('/topic/public/'+chatRoom, onMessageReceived);
 
 	// Tell your username to the server
 	stompClient.send("/app/chat.register", {}, JSON.stringify({
 		sender : username,
+		chatRoom : chatRoom,
 		type : 'JOIN'
 	}))
-
+		document.querySelector('#chatHeading').innerHTML=chatRoom+' Chat Room';
 	connectingElement.classList.add('hidden');
+}
+
+function findAndUpdateExistingMessagesFromGroup(chatRoom){
+	var request = new XMLHttpRequest()
+	request.open('GET', '/chatRoomMessages/'+chatRoom, true)
+	request.onload = function() {
+	  // Begin accessing JSON data here
+	  var data = JSON.parse(this.response)
+	  if (request.status >= 200 && request.status < 400) {
+	    data.forEach(message => {
+	    	displayMessage(message);
+	    })
+	  } 
+	}
+
+	request.send();
+	
 }
 
 function onError(error) {
@@ -68,20 +93,21 @@ function send(event) {
 }
 
 function onMessageReceived(payload) {
+	var sessionValue= document.querySelector('#hdnSession');
 	var message = JSON.parse(payload.body);
 	
-	if(flag && messageArea.childElementCount != 0 ){
+	/*if(flag && messageArea.childElementCount > 1 ){
 		  var child = messageArea.lastElementChild;  
 	        while (child) { 
 	        	messageArea.removeChild(child); 
 	            child = messageArea.lastElementChild; 
 	        } 
+	    	
 		
+		messageArea.remove();
 		
-		/*messageArea.remove();*/
-		
-	}
-	
+	}*/
+	flag = true;
 	if(message.length == undefined ){
 		displayMessage(message);
 	}

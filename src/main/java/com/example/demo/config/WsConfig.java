@@ -10,8 +10,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WsConfig implements WebSocketMessageBrokerConfigurer {
 
+	
+	/*
+	 * public class MyHand extends DefaultHandshakeHandler{
+	 * 
+	 * @Override protected Principal determineUser(ServerHttpRequest request,
+	 * WebSocketHandler wsHandler, Map<String, Object> attributes) {
+	 * 
+	 * return super.determineUser(request, wsHandler, attributes); } }
+	 */
+	
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		//registry.addEndpoint("/test").setHandshakeHandler(new MyHand());
 		registry.addEndpoint("/test").withSockJS();
 	}
 	
@@ -20,4 +31,6 @@ public class WsConfig implements WebSocketMessageBrokerConfigurer {
 		registry.enableSimpleBroker("/topic");
 		registry.setApplicationDestinationPrefixes("/app");
 	}
+	
+	
 }
