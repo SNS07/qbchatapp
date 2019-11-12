@@ -10,13 +10,18 @@ var connectingElement = document.querySelector('.connecting');
 
 var stompClient = null;
 var username = null;
-var flag=null;
+var isCurrentUser='Y';
 
 var colors = [ '#2196F3', '#32c787', '#00BCD4', '#ff5652', '#ffc107',
 		'#ff85af', '#FF9800', '#39bbb0' ];
 
+
+window.onload = function() {
+	showNotificationToUser();
+	};
+
 function connect(event) {
-	flag = true;
+
 	
 	username = document.querySelector('#name').value.trim();
 	
@@ -76,7 +81,7 @@ function onError(error) {
 }
 
 function send(event) {
-	flag = false;
+	isCurrentUser = 'Y';
 	var messageContent = messageInput.value.trim();
 
 	if (messageContent && stompClient) {
@@ -92,7 +97,51 @@ function send(event) {
 	event.preventDefault();
 }
 
+function showNotificationToUser(){
+	
+	 if (Notification.permission !== 'granted')
+		  Notification.requestPermission();
+	
+	
+/*	document.addEventListener('DOMContentLoaded', function() {
+		 if (!Notification) {
+		  alert('Desktop notifications not available in your browser. Try Chromium.');
+		  return;
+		 }
+
+		 if (Notification.permission !== 'granted')
+		  Notification.requestPermission();
+		});*/
+
+
+		
+}
+
+function notifyMe(message) {
+	if(isCurrentUser !=  'Y'){
+		
+	var content = null;
+	  if (message.type === 'CHAT') {
+		  content = message.content
+	  }else{
+		  content = message.type
+	  }
+	 if (Notification.permission !== 'granted')
+	  Notification.requestPermission();
+	 else {
+	  var notification = new Notification('Message from '+message.sender, {
+	   body: content,
+	  });
+	  notification.onclick = function() {
+	   window.focus();
+	  };
+	 }
+	}
+	isCurrentUser = null;
+	}
+
 function onMessageReceived(payload) {
+	
 	var sessionValue= document.querySelector('#hdnSession');
 	var message = JSON.parse(payload.body);
 	
@@ -107,12 +156,13 @@ function onMessageReceived(payload) {
 		messageArea.remove();
 		
 	}*/
-	flag = true;
 	if(message.length == undefined ){
+		notifyMe(message);
 		displayMessage(message);
 	}
 	else if( message.length == 1){
 		message = message[0];
+		
 		displayMessage(message);
 	}else{
 		for(var i=0;i<message.length;i++){
