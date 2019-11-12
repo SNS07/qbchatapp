@@ -26,7 +26,7 @@ function isNewNotificationSupported() {
 	    if (!window.Notification || !Notification.requestPermission)
 	        return false;
 	    if (Notification.permission == 'granted')
-	        throw new Error('You must only call this \*before\* calling	Notification.requestPermission(), otherwise this feature detect would bug theuser with an actual notification!');
+	    	return true;
 	    try {
 	        new Notification('');
 	    } catch (e) {
@@ -114,11 +114,8 @@ function send(event) {
 }
 
 function showNotificationToUser(){
-	if (!'Notification' in window) {
-		  // Notifications aren't supported
-		  return;
-		}
-	 if (Notification.permission !== 'granted')
+
+	 if (isNewNotificationSupported() && isNotification.permission !== 'granted')
 		  Notification.requestPermission();
 	
 		
@@ -126,12 +123,7 @@ function showNotificationToUser(){
 
 function notifyMe(message) {
 	
-	if (!'Notification' in window) {
-		  // Notifications aren't supported
-		  return;
-		}
-	
-	if(isCurrentUser !=  'Y'){
+	if(isNewNotificationSupported() && isCurrentUser !=  'Y'){
 		
 	var content = null;
 	  if (message.type === 'CHAT') {
