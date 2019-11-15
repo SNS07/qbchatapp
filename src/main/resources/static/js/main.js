@@ -115,7 +115,7 @@ function send(event) {
 
 function showNotificationToUser(){
 
-	 if (isNewNotificationSupported() && isNotification.permission !== 'granted')
+	 if (isNewNotificationSupported() && Notification.permission !== 'granted')
 		  Notification.requestPermission();
 	
 		
