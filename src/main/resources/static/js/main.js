@@ -58,6 +58,10 @@ function onConnected() {
 	
 	
 	var chatRoom = document.querySelector('#chatRoom').value.trim().toUpperCase();
+	if(!chatRoom){
+		chatRoom = 'GLOBAL';
+	}
+	
 	
 	findAndUpdateExistingMessagesFromGroup(chatRoom);
 	
@@ -70,7 +74,7 @@ function onConnected() {
 		chatRoom : chatRoom,
 		type : 'JOIN'
 	}))
-		document.querySelector('#chatHeading').innerHTML=chatRoom+' Chat Room';
+		document.querySelector('#chatHeading').innerHTML=chatRoom+' CHAT ROOM';
 	connectingElement.classList.add('hidden');
 }
 
